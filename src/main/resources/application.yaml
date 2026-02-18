@@ -7,3 +7,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+jwt:
+  secret: your-very-long-secure-random-secret-at-least-43-chars-please-2026

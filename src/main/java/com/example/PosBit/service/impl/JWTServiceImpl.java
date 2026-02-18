@@ -1,0 +1,88 @@
+package com.example.PosBit.service.impl;
+
+import com.example.PosBit.service.JWTService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+@Service
+public class JWTServiceImpl implements JWTService {
+
+    private static final long EXPIRATION_TIME = 1000L * 60 * 60 * 30; // 30 hours (like your original)
+
+    // This will be set once at startup with a secure random key
+    private static String SECRET_KEY_BASE64;
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    // Constructor generates a secure random key (256-bit for HS256)
+    public JWTServiceImpl() throws NoSuchAlgorithmException {
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+        SecretKey secretKey = keyGenerator.generateKey();
+        SECRET_KEY_BASE64 = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    }
+
+    @Override
+    public String generateToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSignInKey())           // modern style — no SignatureAlgorithm needed
+                .compact();
+    }
+
+    private SecretKey getSignInKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public String extractUsername(String jwtToken) {
+        return extractClaim(jwtToken, Claims::getSubject);
+    }
+
+    @Override
+    public boolean validateToken(String jwtToken, UserDetails userDetails) {
+        final String username = extractUsername(jwtToken);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(jwtToken);
+    }
+
+    private boolean isTokenExpired(String jwtToken) {
+        return extractExpiration(jwtToken).before(new Date());
+    }
+
+    private Date extractExpiration(String jwtToken) {
+        return extractClaim(jwtToken, Claims::getExpiration);
+    }
+
+    private <T> T extractClaim(String jwtToken, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(jwtToken);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String jwtToken) {
+        return Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload();
+    }
+}
