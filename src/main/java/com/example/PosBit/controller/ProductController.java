@@ -7,6 +7,7 @@ import com.example.PosBit.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/products")
@@ -33,19 +34,23 @@ public class ProductController {
     }
 
     @PostMapping
-    public String createProductDetails(@RequestBody Product  product) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String createProduct(@RequestBody Product product) {
         productService.createProduct(product);
         return "Product created successfully";
     }
 
-    @PutMapping
-    public String updateProductDetails(@RequestBody Product  product) {
+    @PutMapping("/{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateProduct(@PathVariable Integer productId, @RequestBody Product product) {
+        product.setProductId(productId);
         productService.updateProduct(product);
         return "Product updated successfully";
     }
 
     @DeleteMapping("/{productId}")
-    public String deleteProductDetails(@PathVariable Integer productId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteProduct(@PathVariable Integer productId) {
         productService.deleteProduct(productId);
         return "Product deleted successfully";
     }

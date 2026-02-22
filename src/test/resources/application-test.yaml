@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:posbit;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;NON_KEYWORDS=USER,USERS,ORDER,ORDERS
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        boot:
+          allow_jdbc_metadata_access: false
+
+jwt:
+  secret: test-secret-at-least-43-characters-long-for-tests-2026
+
+app:
+  default-admin:
+    username: admin_pos
+    password: admin_123

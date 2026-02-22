@@ -38,15 +38,19 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String generateToken(String username) {
+    public String generateToken(String username, java.util.Collection<? extends org.springframework.security.core.GrantedAuthority> authorities) {
         Map<String, Object> claims = new HashMap<>();
+        java.util.List<String> roles = authorities.stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                .toList();
+        claims.put("roles", roles);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSignInKey())           // modern style — no SignatureAlgorithm needed
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSignInKey())
                 .compact();
     }
 
@@ -75,14 +79,19 @@ public class JWTServiceImpl implements JWTService {
 
     private <T> T extractClaim(String jwtToken, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(jwtToken);
+        if (claims == null) return null;
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String jwtToken) {
-        return Jwts.parser()
-                .verifyWith(getSignInKey())
-                .build()
-                .parseSignedClaims(jwtToken)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(jwtToken)
+                    .getPayload();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -42,14 +42,19 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = applicationContext.getBean(UserInfoUserDetailsServiceImpl.class)
-                    .loadUserByUsername(username);
+            try {
+                UserDetails userDetails = applicationContext.getBean(UserInfoUserDetailsServiceImpl.class)
+                        .loadUserByUsername(username);
 
-            if (jwtService.validateToken(jwtToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.validateToken(jwtToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception e) {
+                // If user not found or token invalid, just continue. 
+                // Spring Security will handle the unauthorized access if needed.
             }
         }
 

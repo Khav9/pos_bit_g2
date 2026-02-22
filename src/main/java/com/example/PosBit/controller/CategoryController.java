@@ -6,6 +6,7 @@ import com.example.PosBit.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/product-category")
@@ -32,19 +33,23 @@ public class CategoryController {
     }
 
     @PostMapping
-    public String createCategoryDetails(@RequestBody Category  category) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String createCategory(@RequestBody Category category) {
         categoryService.createCategory(category);
         return "Category created successfully";
     }
 
-    @PutMapping
-    public String updateCategoryDetails(@RequestBody Category  category) {
+    @PutMapping("/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateCategory(@PathVariable String categoryId, @RequestBody Category category) {
+        category.setCategoryId(categoryId);
         categoryService.updateCategory(category);
         return "Category updated successfully";
     }
 
     @DeleteMapping("/{categoryId}")
-    public String deleteCategoryDetails(@PathVariable("categoryId") String categoryId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteCategory(@PathVariable String categoryId) {
         categoryService.deleteCategory(categoryId);
         return "Category deleted successfully";
     }
