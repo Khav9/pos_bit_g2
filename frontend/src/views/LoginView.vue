@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import appLogo from '@/assets/pos-systems-logo.svg'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -21,9 +22,9 @@ async function handleLogin() {
     <div class="auth-bg"></div>
     <div class="auth-card glass-card">
       <div class="auth-header">
-        <div class="auth-logo">⚡</div>
+        <img class="auth-logo" :src="appLogo" alt="PulsePOS logo" />
         <h1>Welcome Back</h1>
-        <p>Sign in to your POS dashboard</p>
+        <p>Sign in to your PulsePOS dashboard</p>
       </div>
 
       <div v-if="auth.error" class="alert alert-error">
@@ -105,14 +106,8 @@ async function handleLogin() {
 .auth-logo {
   width: 56px;
   height: 56px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
+  object-fit: contain;
   margin: 0 auto 16px;
-  box-shadow: 0 8px 25px var(--accent-glow);
 }
 
 .auth-header h1 {

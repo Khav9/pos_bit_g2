@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="POS Systems Logo">
+  <defs>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2f7fd1"/>
+      <stop offset="100%" stop-color="#145fa8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="246" fill="#ffffff" stroke="url(#ring)" stroke-width="20"/>
+  <g fill="#9a9a9a">
+    <rect x="190" y="122" width="120" height="80" rx="6"/>
+    <rect x="200" y="132" width="100" height="56" fill="#ffffff"/>
+    <rect x="236" y="205" width="28" height="12"/>
+    <rect x="218" y="217" width="64" height="8"/>
+    <rect x="316" y="144" width="40" height="58" rx="4"/>
+    <rect x="321" y="149" width="30" height="34" fill="#ffffff"/>
+    <rect x="325" y="187" width="22" height="11"/>
+  </g>
+  <text x="256" y="320" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="164" font-weight="700" fill="#1562af">POS</text>
+  <text x="256" y="385" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" letter-spacing="2" fill="#222222">SYSTEMS</text>
+</svg>

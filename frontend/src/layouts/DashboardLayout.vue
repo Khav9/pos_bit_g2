@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import appLogo from '@/assets/pos-systems-logo.svg'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -46,8 +47,8 @@ function isActive(path) {
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
-          <span class="logo-icon">⚡</span>
-          <span v-if="!sidebarCollapsed" class="logo-text">POS<span class="text-accent">Bit</span></span>
+          <img class="logo-icon" :src="appLogo" alt="PulsePOS logo" />
+          <span v-if="!sidebarCollapsed" class="logo-text">Pulse<span class="text-accent">POS</span></span>
         </div>
         <button class="toggle-btn" @click="sidebarCollapsed = !sidebarCollapsed">
           {{ sidebarCollapsed ? '→' : '←' }}
@@ -133,12 +134,7 @@ function isActive(path) {
 .logo-icon {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 

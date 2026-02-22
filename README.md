@@ -1,6 +1,6 @@
-# POS BIT G2
+# PulsePOS (POS BIT G2)
 
-Point of Sale (POS) management system with:
+PulsePOS is a Point of Sale (POS) management system with:
 
 - Spring Boot backend (JWT auth, MySQL)
 - Vue 3 frontend (Vite + Pinia)
@@ -155,4 +155,3 @@ Protected examples:
 - `POST /sales-orders`
 - `POST /sales-orders/all`
 - `POST /sales-orders/summary`
-
